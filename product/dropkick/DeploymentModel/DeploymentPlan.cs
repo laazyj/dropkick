@@ -3,13 +3,13 @@ namespace dropkick.DeploymentModel
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using log4net;
 
     public class DeploymentPlan
     {
         readonly IList<DeploymentRole> _roles = new List<DeploymentRole>();
 
         public string Name { get; set; }
+        public IEnumerable<string> UnmappedRoles { get; set; }
 
         public int RoleCount
         {

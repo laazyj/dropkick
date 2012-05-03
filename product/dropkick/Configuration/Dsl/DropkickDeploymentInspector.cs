@@ -96,24 +96,19 @@ namespace dropkick.Configuration.Dsl
 
         public DeploymentPlan GetPlan(Deployment deployment)
         {
-            verifyRolesAreMapped(deployment);
+            _plan.UnmappedRoles = verifyRolesAreMapped(deployment);
 
             deployment.InspectWith(this);
 
             return _plan;
         }
 
-        void verifyRolesAreMapped(Deployment deployment)
+        IEnumerable<string> verifyRolesAreMapped(Deployment deployment)
         {
             var mappedRoles = _serverMappings.Roles();
-            var deploymentRoles = deployment.Roles;
-            foreach(var role in deploymentRoles)
-            {
-                if(!mappedRoles.Contains(role))
-                {
-                    throw new DeploymentConfigurationException("You have not mapped a server to role '{0}'".FormatWith(role));
-                }
-            }
+            return deployment.Roles
+                .Where(role => !mappedRoles.Contains(role))
+                .ToArray();
         }
 
         bool ShouldNotProcessRole(string role)

@@ -22,7 +22,7 @@ namespace dropkick.Engine
     {
         static readonly IDictionary<DeploymentCommands, Action<DeploymentPlan>> _actions = new Dictionary<DeploymentCommands, Action<DeploymentPlan>>();
         static DropkickDeploymentInspector _inspector;
-        //static readonly ILog _log = LogManager.GetLogger(typeof(DeploymentPlanDispatcher));
+        static readonly ILog _log = LogManager.GetLogger(typeof(DeploymentPlanDispatcher));
 
         static DeploymentPlanDispatcher()
         {
@@ -39,6 +39,8 @@ namespace dropkick.Engine
             if (args.Role != "ALL") _inspector.RolesToGet(args.Role.Split(','));
 
             var plan = _inspector.GetPlan(deployment);
+            foreach (var unmappedRole in plan.UnmappedRoles)
+                _log.WarnFormat("You have not mapped a server to role '{0}'", unmappedRole);
 
             //HOW TO PLUG IN   args.Role
             //TODO: should be able to block here
