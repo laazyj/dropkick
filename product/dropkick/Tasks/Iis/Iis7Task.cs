@@ -232,7 +232,9 @@ namespace dropkick.Tasks.Iis
                 LogFineGrain("[iis7] Created '{0}'", PathOnServer);
             }
 
-            var firstBinding = Bindings.FirstOrDefault() ?? new IisSiteBinding();
+            var firstBinding = Bindings != null
+                ? Bindings.FirstOrDefault() ?? new IisSiteBinding()
+                : new IisSiteBinding();
 
             // Unfortunately the API for adding sites differs for HTTPS & HTTP
             var site = firstBinding.Protocol != "https"
